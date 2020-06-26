@@ -1,0 +1,92 @@
+{% extends "layout.xhtml" %}
+{% block body %}
+<div class="row">
+
+    <!-- Post Content Column -->
+    <div class="col-lg-8">
+
+      <!-- Title -->
+      <h2 class="mt-4">{{article.title}}</h2>
+
+      <!-- Author -->
+      <p class="lead">
+        by
+        <a href="{% url 'profile' article.author.id %}">{{article.author.username}}</a>
+      </p>
+
+      <hr>
+
+      <!-- Date/Time -->
+      <p>{{article.created_date}}</p>
+
+      
+
+      <!-- Preview Image -->
+      {% if article.article_image %}
+      <img class="img-fluid rounded" src="{{article.article_image.url}}" alt="">
+      {% endif %}
+
+      <hr>
+
+      <!-- Post Content -->
+      <p class= "lead">
+          {{article.content|safe}}
+      </p>
+        <hr>
+      {% if request.user.is_authenticated %}
+        <!-- Comments addForm -->
+       <div class="card my-4">
+        <h5 class="card-header">Yorum Yaz</h5>
+        <div class="card-body">
+          <form method = "POST" action="{% url 'comment' article.id %}">
+            {% csrf_token %}
+            <div class="form-group">
+              <textarea name="comment_content" class="form-control" rows="3"></textarea>
+            </div>
+            <button type="submit" class="btn btn-danger">Ekle</button>
+          </form>
+        </div>
+      </div>
+      <hr>
+      <h4>Yorumlar</h4>
+      <hr>
+    {% else %} 
+      <div class = "alert alert-danger">
+          Yorum yapmak için üye olmalısınız.
+      </div>
+    
+    {% endif %}
+    <!--Comments form-->
+    {% if comments %}
+    {% for comment  in comments %}
+    <!-- Single Comment -->
+      <div class="media mb-4">
+        <img class="d-flex mr-3 rounded-circle" src="http://placehold.it/50x50" alt="">
+        <div class="media-body">
+          <h5 class="mt-0">{{comment.comment_author}}</h5>
+          {{comment.comment_content}} <br>
+          <small class="text-muted" style ="margin-left: 450px;">{{comment.comment_date}}</small>
+        </div>
+      </div>
+    {% endfor %}
+    {% else %}
+      <div class = "alert alert-danger">
+         Bu makaleye hiç yorum yapılmamış, İlk yorum yapan siz olun
+      </div>
+    {% endif %}
+    
+    
+
+      
+
+    
+
+      
+      
+    
+
+</div>
+
+
+
+{% endblock body %}

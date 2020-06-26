@@ -1,0 +1,87 @@
+{% extends "layout.xhtml" %}
+
+{% block body %}
+<div style="margin-left: 820px;" class = "container" >
+  <form class="form-inline mr-auto">
+    {% csrf_token %}
+    <input class="form-control mr-sm-2" name = "keyword" type="text" placeholder="Makale Ara" aria-label="Search">
+    <button class="btn btn-outline-danger btn-rounded btn-sm my-0" type="submit">Ara</button>
+  </form>
+</div>
+<h2 style = "text-align: center;">Makaleler</h2>
+<hr>
+<div class="flex-row">
+{% if articles %}
+  {% for article in articles  %}
+   
+   {% if article.article_image %}
+     <div class="card" style="width:18rem;">
+      
+          <!-- Preview Image -->
+          
+          <img class="card-img-top" src= "{{article.article_image.url}}" alt="Card image cap">
+          
+        
+          <!-- Post Content Column -->
+        <div class="card-body">
+            <!-- Title -->
+            <a href="{% url 'detail' article.id %}" target = "_blank"><h5 class="card-title">{{article.title}}</h5></a>
+            
+            
+
+            <!-- Author -->
+            <p class="lead">
+              by
+                <a href="{% url 'profile' article.author.id}">{{article.author.username}}</a>
+            </p>
+
+            <hr>
+
+            
+
+            <!-- Post Content -->
+          <p class="card-text">
+            {{article.content|safe|truncatewords:5}}
+          </p>
+          
+          
+          <a href="{% url 'detail' article.id %}" class="btn btn-danger">Devamını oku</a>
+
+          <p class="card-text"><small class="text-muted">{{article.created_date}}</small></p>  
+          
+        </div>
+    
+        
+       
+      </div>    
+        
+    {% else %}
+      <div class="card" style="height:fit-content;">
+        <div class="card-body">
+            <a href="{% url 'detail' article.id %}"><h5 class="card-title">{{article.title}}</h5></a>
+            <p>
+              by
+                <a href="http://127.0.0.1:8000/user/{{article.author.id}}">{{article.author.username}}</a>
+            </p>
+            <p class="card-text">{{article.content|safe|truncatewords:5}}</p>
+            <p class="card-text"><small class="text-muted">{{article.created_date}}</small></p>
+            <a style ="margin-left: 950px;" href="{% url 'profile' article.author.id}" class="btn btn-danger">Devamını oku</a>
+        </div>
+      </div>
+      
+    {% endif %}   
+     
+     
+    <hr>
+  {% endfor %}
+
+
+
+
+{% else %}
+<div style ="width: 1200px;" class = "alert alert-danger">
+    Aradığınız Makale Bulunamadı...
+</div>
+{% endif %}
+</div>
+{% endblock body %}
